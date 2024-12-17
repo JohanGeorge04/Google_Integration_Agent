@@ -6,19 +6,23 @@ def find_doc_by_title(title: str):
     creds = get_credentials()
     service = build('drive', 'v3', credentials=creds)
     
-    # Use the Drive API to list files with the specified title
+  
     results = service.files().list(
-        q=f"name='{title}' and mimeType='application/vnd.google-apps.document'",
+        q=f"name='{title}' and mimeType='application/vnd.google-apps.document' and trashed=false",
         fields="files(id, name)"
     ).execute()
     files = results.get('files', [])
     
     if not files:
-        return None  # Document not found
-    return files[0]['id']  # Return the first matching document ID
+        return None  
+    return files[0]['id'] 
 
 def create_document(title: str, content: str):
     """Create a new Google Doc."""
+    existing_doc_id = find_doc_by_title(title)
+    if existing_doc_id:
+        return f"Document with the title '{title}' already exists: https://docs.google.com/document/d/{existing_doc_id}"
+    
     creds = get_credentials()
     service = build("docs", "v1", credentials=creds)
     doc = service.documents().create(body={"title": title}).execute()
@@ -38,8 +42,9 @@ def create_document(title: str, content: str):
     ).execute()
     return f"Document created: https://docs.google.com/document/d/{doc_id}"
 
+
 def update_document(title: str, content: str):
-    """Update a Google Doc by its title."""
+    """Update a Google Doc."""
     doc_id = find_doc_by_title(title)
     if not doc_id:
         return f"No document found with the title '{title}'."
@@ -61,10 +66,11 @@ def update_document(title: str, content: str):
     return f"Document updated: https://docs.google.com/document/d/{doc_id}"
 
 def delete_document(title: str):
-    """Delete a Google Doc by its title."""
+    """Delete a Google Doc."""
     doc_id = find_doc_by_title(title)
     if not doc_id:
         return f"No document found with the title '{title}'."
+    
     creds = get_credentials()
     service = build("drive", "v3", credentials=creds)
     service.files().delete(fileId=doc_id).execute()
