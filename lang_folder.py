@@ -8,7 +8,7 @@ def create_folder(input_text: str) -> str:
     Create a folder in Google Drive.
     Input format: <folder_name>
     """
-    folder_name = input_text.strip()  
+    folder_name = input_text.split("'")[1].strip()  
     if not folder_name:
         return "Error: Folder name is missing or empty."
     return create_drive_folder(folder_name)

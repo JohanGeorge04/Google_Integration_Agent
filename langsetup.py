@@ -17,6 +17,10 @@ llm = ChatOpenAI(model="gpt-4", temperature=0)
 
 agent = initialize_agent(tools, llm, agent="zero-shot-react-description", verbose=True)
 
-response = agent.run("delete document with title sample ")
-print(response)
+# response = agent.run("Create document with title sample with content this is a sample ")
+# response = agent.run("update document with title sample with content this is a new sample ")
+# response = agent.run("Delete document with title sample")
+# response = agent.run("Create folder with folder name Test Document ")
+# response = agent.run("Delete folder with folder name Test Document ")
+
 

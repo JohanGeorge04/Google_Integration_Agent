@@ -9,16 +9,12 @@ def create_drive_folder(folder_name):
     """
     creds = get_credentials()
     drive_service = build("drive", "v3", credentials=creds)
-    
-
     query = f"name = '{folder_name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
     results = drive_service.files().list(q=query, fields="files(id, name)").execute()
     existing_folders = results.get("files", [])
     
     if existing_folders:
-        return f"Folder with name '{folder_name}' already exists with ID: {existing_folders[0]['id']}"
-    
-
+        return f"Folder with name '{folder_name}' already exists with ID: {existing_folders[0]['id']}"   
     folder_metadata = {
         "name": folder_name,
         "mimeType": "application/vnd.google-apps.folder"
@@ -28,7 +24,6 @@ def create_drive_folder(folder_name):
         return f"Folder '{folder_name}' created with ID: {folder.get('id')}"
     except Exception as e:
         return f"Failed to create folder: {e}"
-
 
 
 def delete_drive_folder(folder_name: str):
@@ -41,16 +36,11 @@ def delete_drive_folder(folder_name: str):
 
         creds = get_credentials()
         drive_service = build("drive", "v3", credentials=creds)
-
-
         query = f"name = '{folder_name}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
         results = drive_service.files().list(q=query, fields="files(id, name)").execute()
-
         files = results.get("files", [])
-
         if not files:
             return f"Folder '{folder_name}' not found."
-
         for file in files:
             folder_id = file.get("id")
             try:
@@ -60,7 +50,6 @@ def delete_drive_folder(folder_name: str):
                 print(f"Failed to delete folder '{file.get('name')}' with ID '{folder_id}': {e}")
 
         return f"Deleted {len(files)} folder(s) named '{folder_name}'."
-
     except Exception as e:
         return f"Failed to delete folder: {e}"
 
