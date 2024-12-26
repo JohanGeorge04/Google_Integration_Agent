@@ -28,8 +28,8 @@ Before setting up the project, ensure you have the following:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/google-integration-langchain.git
-   cd google-integration-langchain
+   git clone https://github.com/just-ai-labs/Google_Integration_Agent
+   cd Google_Integration_Agent
    ```
 
 2. Install dependencies:
@@ -48,7 +48,7 @@ Before setting up the project, ensure you have the following:
 
 1. Authenticate with Google API:
    ```bash
-   python authenticate.py
+   python credentials.py
    ```
    Follow the instructions to complete the authentication process.
 
