@@ -1,6 +1,7 @@
 from googleapiclient.discovery import build
 from credential import get_credentials
 
+
 def find_doc_by_title(title: str):
     """Searches for a document by its title in Google Drive."""
     creds = get_credentials()
@@ -16,24 +17,38 @@ def find_doc_by_title(title: str):
         return None  
     return files[0]['id'] 
 
-def create_document(title: str, content: str, folder_id: str):
+def create_document(title: str, folder_id: str) -> str:
     """
-    Create a new Google Doc. If a document with the same title exists, return its link.
+    Create a new Google Doc with only a title.
+    If a document with the same title exists, return its link.
     """
-    
-    existing_doc_id = find_doc_by_title(title)  
+    existing_doc_id = find_doc_by_title(title)
     if existing_doc_id:
-        return f"Document with the title '{title}' already exists: https://docs.google.com/document/d/{existing_doc_id}"
+        return existing_doc_id, f"https://docs.google.com/document/d/{existing_doc_id}"
 
-    creds = get_credentials()  
+    creds = get_credentials()
     docs_service = build("docs", "v1", credentials=creds)
     drive_service = build("drive", "v3", credentials=creds)
- 
+
     doc = docs_service.documents().create(body={"title": title}).execute()
     doc_id = doc.get("documentId")
 
+    drive_service.files().update(fileId=doc_id, addParents=folder_id).execute()
+
+    return doc_id, f"https://docs.google.com/document/d/{doc_id}"
+
+def add_content_to_document(document_id: str, content: str) -> str:
+    """
+    Append content to the specified Google Doc.
+    """
+    if not document_id:
+        return "Error: Document ID is required."
+
+    creds = get_credentials()
+    docs_service = build("docs", "v1", credentials=creds)
+
     docs_service.documents().batchUpdate(
-        documentId=doc_id,
+        documentId=document_id,
         body={
             "requests": [
                 {
@@ -45,14 +60,10 @@ def create_document(title: str, content: str, folder_id: str):
             ]
         }
     ).execute()
-  
-    file_metadata = {
-        "name": title,
-        "parents": [folder_id]  
-    }
-    drive_service.files().update(fileId=doc_id, addParents=folder_id).execute()
+    return f"Content added to document: https://docs.google.com/document/d/{document_id}"
 
-    return f"Document created: https://docs.google.com/document/d/{doc_id}"
+
+
 
 def update_document(title: str, content: str):
     """
@@ -108,3 +119,41 @@ def delete_document(title: str):
     service.files().delete(fileId=doc_id).execute()
 
     return f"Document with title '{title}' deleted successfully."
+
+
+
+from googleapiclient.discovery import build
+from credential import get_credentials
+
+def get_document_content(document_id: str) -> str:
+    """
+    Retrieve the content of a Google Doc by its ID.
+
+    Args:
+        document_id (str): The ID of the Google Doc.
+
+    Returns:
+        str: The content of the document as plain text.
+    """
+    if not document_id:
+        return "Error: Document ID is required."
+
+    try:
+        # Authenticate and initialize the Google Docs service
+        creds = get_credentials()
+        docs_service = build("docs", "v1", credentials=creds)
+
+        # Fetch the document
+        document = docs_service.documents().get(documentId=document_id).execute()
+
+        # Extract the content
+        content = ""
+        for element in document.get('body', {}).get('content', []):
+            if 'paragraph' in element:
+                for text_run in element['paragraph'].get('elements', []):
+                    content += text_run.get('textRun', {}).get('content', '')
+
+        return content.strip()
+
+    except Exception as e:
+        return f"An error occurred while retrieving the document content: {e}"

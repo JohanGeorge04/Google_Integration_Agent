@@ -32,7 +32,7 @@ def delete_folder(input_text: str) -> str:
 @tool
 def list_folders_tool(input_text: str = None) -> str:
     """
-    List all available folders in Google Drive.
+    List all available folders in Google Drive.No other operations are done.
     Input: No input required
     """
     try:   
@@ -48,7 +48,7 @@ def list_folders_tool(input_text: str = None) -> str:
 def select_folder_tool(input_text: str) -> str:
     """
     Select a folder from the available list by name.
-    Input: Folder name
+    Input format: <folder_name>
     """
     global selected_folder
     try:

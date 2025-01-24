@@ -78,4 +78,3 @@ def list_folders():
         
         return f"An error occurred: {e}"
 
-
