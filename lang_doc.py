@@ -24,19 +24,17 @@ def create_doc(input_text: str) -> str:
         
         if not title:
             return "Error: The 'title' field is required."
-        
-        # Create the document
+
         document_id, document_url = create_document(title, selected_folder["id"])
         last_created_document = {"id": document_id, "title": title}
         
-        # Prompt the user if they want to add content
         while True:
             add_content_choice = input("Do you want to add content to the document? (yes/no): ").strip().lower()
             if add_content_choice in ('yes', 'no'):
                 break
             print("Invalid input. Please enter 'yes' or 'no'.")
         
-        # If user chooses to add content, prompt for it
+
         if add_content_choice == 'yes':
             content = input("Enter the content to be added to the document: ").strip()
             if content:
@@ -49,7 +47,6 @@ def create_doc(input_text: str) -> str:
                         f"in folder '{selected_folder['name']}', but no content was added. "
                         f"View the document here: {document_url}")
         
-        # If user chooses not to add content
         return (f"Document '{title}' created successfully with ID '{document_id}' "
                 f"in folder '{selected_folder['name']}'. No content was added. "
                 f"View the document here: {document_url}")
@@ -108,7 +105,6 @@ def update_doc(input_text: str) -> str:
         if not title:
             return "Error: The 'title' field is required."
 
-        # Locate the document by title
         document_id = find_doc_by_title(title)
 
         if not document_id:
@@ -126,11 +122,11 @@ def update_doc(input_text: str) -> str:
             return "Error: No content provided for updating the document."
 
         if action_choice == 'yes':
-            # Overwrite the document's content
+
             update_document(title, content)
             action_taken = "overwritten"
         else:
-            # Append to the document's content
+
             current_content = get_document_content(document_id)
             new_content = current_content + "\n" + content
             update_document(title, new_content)
@@ -157,8 +153,6 @@ def update_doc_with_content(input_text: str) -> str:
         if not title or not content:
             return "Error: Both 'title' and 'content' fields are required."
         
-       
-        # Locate the document by title
         document_id = find_doc_by_title(title)
 
         if not document_id:
@@ -176,11 +170,9 @@ def update_doc_with_content(input_text: str) -> str:
             return "Error: No content provided for updating the document."
 
         if action_choice == 'yes':
-            # Overwrite the document's content
             update_document(title, content)
             action_taken = "overwritten"
         else:
-            # Append to the document's content
             current_content = get_document_content(document_id)
             new_content = current_content + "\n" + content
             update_document(title, new_content)

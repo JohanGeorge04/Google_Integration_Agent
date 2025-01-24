@@ -122,9 +122,6 @@ def delete_document(title: str):
 
 
 
-from googleapiclient.discovery import build
-from credential import get_credentials
-
 def get_document_content(document_id: str) -> str:
     """
     Retrieve the content of a Google Doc by its ID.
@@ -139,14 +136,12 @@ def get_document_content(document_id: str) -> str:
         return "Error: Document ID is required."
 
     try:
-        # Authenticate and initialize the Google Docs service
+    
         creds = get_credentials()
         docs_service = build("docs", "v1", credentials=creds)
 
-        # Fetch the document
         document = docs_service.documents().get(documentId=document_id).execute()
 
-        # Extract the content
         content = ""
         for element in document.get('body', {}).get('content', []):
             if 'paragraph' in element:
