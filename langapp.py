@@ -16,7 +16,7 @@ if not gemini_api_key:
     raise ValueError("Gemini API key not found. Please set it in the .env file.")
 
 # Initialize Gemini LLM
-llm = ChatGoogleGenerativeAI(google_api_key=gemini_api_key, model="gemini-pro", temperature=0)
+llm = ChatGoogleGenerativeAI(google_api_key=gemini_api_key, model="gemini-2.0-flash", temperature=0)
 
 # Define tools for document management
 doc_tools = [
