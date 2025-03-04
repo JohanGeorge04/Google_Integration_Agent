@@ -62,6 +62,7 @@ Before setting up the project, ensure you have the following:
 ```
 .
 ├── credentials.json          # Google API credentials file
+├── QA.py                     #QA functionality
 ├── langapp.py                # Main script for the integration
 ├── credentials.py            # Authentication handler for Google API
 ├── doc_manage.py             # Document management utilities
